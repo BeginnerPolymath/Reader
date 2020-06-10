@@ -40,6 +40,7 @@ Search item selection
 <a href="https://ibb.co/fXVwqBV"><img src="https://i.ibb.co/51XHGtX/Some-Level14.png" alt="Some-Level14" border="0"></a>
 </details>
 
+Download:
 [Android](https://github.com/BeginnerPolymath/Reader/raw/master/Android/FastReader.apk)
 
 [Windows](https://github.com/BeginnerPolymath/Reader/raw/master/Windows/Windows.rar)
