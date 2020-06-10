@@ -6,6 +6,7 @@ using TMPro;
 using System;
 using System.IO;
 using MessagePack;
+using System.IO.Compression;
 
 [Serializable]
 public struct ImageColor
