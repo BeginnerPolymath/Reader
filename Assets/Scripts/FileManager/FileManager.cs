@@ -97,6 +97,7 @@ public class FileManager : MonoBehaviour
             file._FileManager = this;
             file.File = false;
             Files.Add(file.gameObject);
+            file.ButtonImage.color = Color.gray;
 
             string[] nameFolder = pathToFolder.Split('/');
             file.SetText(pathToFolder, nameFolder[nameFolder.Length-1]);
@@ -107,7 +108,7 @@ public class FileManager : MonoBehaviour
             FileScript file = Instantiate(FilePrefab, Content).GetComponent<FileScript>();
             file._FileManager = this;
             file.File = true;
-            file.ButtonImage.color = Color.green;
+            file.ButtonImage.color = new Color32(66, 88, 255, 255);
 
             Files.Add(file.gameObject);
 
@@ -120,7 +121,7 @@ public class FileManager : MonoBehaviour
             FileScript file = Instantiate(FilePrefab, Content).GetComponent<FileScript>();
             file._FileManager = this;
             file.File = true;
-            file.ButtonImage.color = Color.gray;
+            file.ButtonImage.color = new Color32(66, 255, 202, 255);
 
             Files.Add(file.gameObject);
 
@@ -142,7 +143,7 @@ public class FileManager : MonoBehaviour
 
         expButton._FileManager = this;
 
-        expButton._Text.text = pathPart;
+        expButton._Text.text = pathPart + " /";
         expButton.CatalogID = PathParts.Count-1;
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(ExpContent.GetComponent<RectTransform>());

@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class ExpButton : MonoBehaviour
 {
     public FileManager _FileManager;
 
-    public Text _Text;
+    public TextMeshProUGUI _Text;
 
     public int CatalogID;
 
