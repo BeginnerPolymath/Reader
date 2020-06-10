@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
+
 
 public class TextBlock : MonoBehaviour
 {
@@ -20,5 +22,7 @@ public class TextBlock : MonoBehaviour
         FindTextScript._SpritzScript.SetPage(PageNumber);
         FindTextScript.Selected(PartNumber);
         FindTextScript._SpritzScript.SetSpritzWord(0, SpritzScript.WordInTextColor);
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(FindTextScript._SpritzScript.ContentText);
     }
 }
