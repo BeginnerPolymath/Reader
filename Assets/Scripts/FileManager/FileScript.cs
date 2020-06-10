@@ -72,7 +72,8 @@ public class FileScript : MonoBehaviour
 
     float Timer;
 
-    float Times = 0.2f;
+    [HideInInspector]
+    public float Times = 0.2f;
 
     bool Move;
     bool Direction = true;

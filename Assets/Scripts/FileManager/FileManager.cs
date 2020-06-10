@@ -98,6 +98,7 @@ public class FileManager : MonoBehaviour
             file.File = false;
             Files.Add(file.gameObject);
             file.ButtonImage.color = Color.gray;
+            file.Times = 0;
 
             string[] nameFolder = pathToFolder.Split('/');
             file.SetText(pathToFolder, nameFolder[nameFolder.Length-1]);
