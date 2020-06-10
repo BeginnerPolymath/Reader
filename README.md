@@ -41,6 +41,7 @@ Search item selection
 </details>
 
 Download:
+
 [Android](https://github.com/BeginnerPolymath/Reader/raw/master/Android/FastReader.apk)
 
 [Windows](https://github.com/BeginnerPolymath/Reader/raw/master/Windows/Windows.rar)
