@@ -42,4 +42,4 @@ Search item selection
 
 [Android](https://github.com/BeginnerPolymath/Reader/raw/master/Android/FastReader.apk)
 
-[Windows](https://github.com/BeginnerPolymath/Reader/tree/master/Windows)
+[Windows](https://github.com/BeginnerPolymath/Reader/raw/master/Windows.rar)
