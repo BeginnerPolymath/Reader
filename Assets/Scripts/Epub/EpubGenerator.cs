@@ -22,6 +22,11 @@ public class EpubGenerator : MonoBehaviour
 
         XmlDocument bookFile = new XmlDocument();
 
+        foreach (ZipArchiveEntry item in z.Entries)
+        {
+            print(item.FullName);
+        }
+
         bookFile.Load(z.GetEntry("OPS/ch1.xhtml").Open());
 
         print(bookFile.InnerText);
