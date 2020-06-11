@@ -109,7 +109,7 @@ public class FileManager : MonoBehaviour
             FileScript file = Instantiate(FilePrefab, Content).GetComponent<FileScript>();
             file._FileManager = this;
             file.File = true;
-            file.ButtonImage.color = new Color32(66, 88, 255, 255);
+            file.ButtonImage.color = new Color32(81, 136, 224, 255);
 
             Files.Add(file.gameObject);
 
@@ -122,7 +122,7 @@ public class FileManager : MonoBehaviour
             FileScript file = Instantiate(FilePrefab, Content).GetComponent<FileScript>();
             file._FileManager = this;
             file.File = true;
-            file.ButtonImage.color = new Color32(66, 255, 202, 255);
+            file.ButtonImage.color = new Color32(79, 196, 163, 255);
 
             Files.Add(file.gameObject);
 

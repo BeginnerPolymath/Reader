@@ -2657,10 +2657,10 @@ RectTransform:
   m_Father: {fileID: 1556950578}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -86.98}
-  m_SizeDelta: {x: 1080, y: 1746.0829}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: -86.98001}
+  m_SizeDelta: {x: 0, y: -173.91711}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &268671886
 MonoBehaviour:
@@ -11006,7 +11006,7 @@ GameObject:
   - component: {fileID: 911798826}
   - component: {fileID: 911798828}
   m_Layer: 5
-  m_Name: AddBookButton
+  m_Name: ButtinFM
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11045,7 +11045,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 2100000, guid: 81884822f68401142b7ac35b52723712, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.29803923}
+  m_Color: {r: 0.4245283, g: 0.4245283, b: 0.4245283, a: 0.84313726}
   m_RaycastTarget: 1
   m_Maskable: 0
   m_OnCullStateChanged:
@@ -18582,9 +18582,9 @@ RectTransform:
   m_Father: {fileID: 1556950578}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 812.5}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: -147.5}
   m_SizeDelta: {x: 176.04095, y: 15}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1659591307
@@ -22030,7 +22030,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -1.1199951}
+  m_AnchoredPosition: {x: 0, y: -1.1201172}
   m_SizeDelta: {x: -0.000061035156, y: -1.1199951}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &2020339723
