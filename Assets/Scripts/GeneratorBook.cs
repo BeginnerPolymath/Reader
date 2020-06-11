@@ -364,11 +364,12 @@ public class GeneratorBook : MonoBehaviour
 
                 tex.LoadImage(z);
 
-                if(tex.width * tex.height > 93750)
+                if(tex.width * tex.height > 60000)
                 {
                     File.WriteAllBytes(bookFolder + '/' + "/Images/" + "hight" + a, tex.EncodeToJPG());
 
-                    TextureScale.Bilinear(tex, tex.width/2, tex.height/2);
+                    //TextureScale.Bilinear(tex, tex.width/2, tex.height/2);
+                    TextureScale.Bilinear(tex, 200, 300);
 
                     File.WriteAllBytes(bookFolder + '/' + "/Images/" + a, tex.EncodeToJPG());
                 }
