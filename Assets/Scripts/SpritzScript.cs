@@ -388,8 +388,6 @@ public class SpritzScript : MonoBehaviour
 
     void ExitBook ()
     {
-        _Book.PageCounter.text = (PageID + 1).ToString() + "/" + PagesText.Count.ToString();
-
         Pages = new List<Page>(1);;
         PagesText = new List<PageTextC>();
         ViweportText.text = string.Empty;
@@ -494,6 +492,7 @@ public class SpritzScript : MonoBehaviour
                 _ReadInfo.WordID = WordID;
 
                 SavePages();
+                _Book.PageCounter.text = (PageID + 1).ToString() + "/" + PagesText.Count.ToString();
 
                 CalculateTime ();
             }
@@ -636,7 +635,6 @@ public class SpritzScript : MonoBehaviour
         timeWord += 0.3f;
 
         PageID = pageID;
-
         PageInfo.text = (PageID + 1).ToString() + '/' + Pages.Count;
 
         ViweportText.text = PagesText[PageID].PageText;

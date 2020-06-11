@@ -16,7 +16,7 @@ public class GetLink : MonoBehaviour, IPointerClickHandler
     {
         if(linkIndex != -1)
         {
-            ChangeColorChars(Color.white);
+            ChangeColorChars(TextColorz.bottomLeft);
         }
 
         Fade = 0;
@@ -27,7 +27,7 @@ public class GetLink : MonoBehaviour, IPointerClickHandler
         {
             GUIUtility.systemCopyBuffer = m_TextMeshPro.textInfo.linkInfo[linkIndex].GetLinkText();
 
-            ChangeColorChars(Color.green);
+            ChangeColorChars(Color.grey);
 
             TextColor = true;
         }
@@ -55,13 +55,15 @@ public class GetLink : MonoBehaviour, IPointerClickHandler
 
     float Fade;
 
+    public TMP_ColorGradient TextColorz;
+
     void Update ()
     {
         if(TextColor)
         {
             Fade += Time.deltaTime;
 
-            ChangeColorChars(new Color(Mathf.Lerp(0, 1, Fade), 1, Mathf.Lerp(0, 1, Fade), 1));
+            ChangeColorChars(new Color(Mathf.Lerp(Color.grey.r, TextColorz.bottomLeft.r, Fade), Mathf.Lerp(Color.grey.g, TextColorz.bottomLeft.g, Fade), Mathf.Lerp(Color.grey.b, TextColorz.bottomLeft.b, Fade), 1));
 
             if(Fade >= 1)
             {
