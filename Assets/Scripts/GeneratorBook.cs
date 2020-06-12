@@ -64,7 +64,7 @@ public class GeneratorBook : MonoBehaviour
 
     public int CountWordsInPage = 200;
 
-    public FileManager _FileManager;
+    
 
     int OnWord;
 
