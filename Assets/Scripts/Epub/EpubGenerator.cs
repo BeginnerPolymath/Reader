@@ -68,8 +68,6 @@ public class EpubGenerator : MonoBehaviour
     void Start()
     {
         InitializeMethods();
-
-        Generate (PathBooks[BookID]);
     }
 
     string bookFolder;
