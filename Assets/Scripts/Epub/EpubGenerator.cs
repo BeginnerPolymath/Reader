@@ -32,21 +32,10 @@ public class EpubGenerator : MonoBehaviour
 
 
 
-    public int BookID;
-
     public List<XmlDocument> Chapters = new List<XmlDocument>();
-
-    public List<string> ChaptersString = new List<string>();
 
     ZipArchive EpubFile;
 
-    public List<FileStream> Books = new List<FileStream>();
-    
-    public List<string> PathBooks = new List<string>()
-    {
-        "Assets/Books/Epub/igp-twss.epub",
-        "Assets/Books/Epub/Fresko_Vse-luchshee-chto-ne-kupish-za-dengi.375942.fb2.epub",
-    };
 
     void InitializeMethods()
     {
@@ -61,8 +50,29 @@ public class EpubGenerator : MonoBehaviour
         Methods.Add("#text", SpalshText);   //Текст
 
         Methods.Add("strong", StrongNew);   //Модификатор жирности текста
+        Methods.Add("b", StrongNew);   //Модификатор жирности текста
 
-        Methods.Add("em", EmphasisNew);     //Модификатор наклона текста
+        Methods.Add("i", EmphasisNew);     //Модификатор наклона текста
+
+        Methods.Add("a", A);
+
+        Methods.Add("em", Em);     //Модификатор наклона текста?
+
+
+
+            Methods.Add("h1", H);
+            Methods.Add("h2", H);
+            Methods.Add("h3", H);
+            Methods.Add("h4", H);
+            Methods.Add("h5", H);
+            Methods.Add("h6", H);
+
+            Methods.Add("ol", EpmtyLine);
+            Methods.Add("ul", EpmtyLine);
+
+
+            Methods.Add("br", SpalshText);
+            Methods.Add("section", Div);
     }
 
     void Start()
@@ -74,14 +84,13 @@ public class EpubGenerator : MonoBehaviour
 
     public void Generate (string path)
     {
-        EpubBook book = EpubReader.Read(PathBooks[BookID]);
+        EpubBook book = EpubReader.Read(path);
 
         ICollection<EpubChapter> chapters = book.TableOfContents;
 
-        Books.Add(new FileStream("Assets/Books/Epub/igp-twss.epub", FileMode.Open, FileAccess.Read));
-        Books.Add(new FileStream("Assets/Books/Epub/Fresko_Vse-luchshee-chto-ne-kupish-za-dengi.375942.fb2.epub", FileMode.Open, FileAccess.Read));
+        FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
 
-        EpubFile = new ZipArchive(Books[BookID]);
+        EpubFile = new ZipArchive(stream);
 
         foreach (var item in chapters)
         {
@@ -115,6 +124,41 @@ public class EpubGenerator : MonoBehaviour
         PagesText = new List<PageTextC>();
         OnWord = 0;
         ViweportText.text = string.Empty;
+        Chapters.Clear();
+    }
+
+
+    public void Em (XmlNode node)
+    {
+        TextParts.Add("<align=" + "center" + ">");
+        TextParts.Add("<b><i>");
+
+        foreach (XmlNode childNode in node.ChildNodes)
+        {
+            Methods[childNode.Name].Invoke(childNode);
+        }
+
+        TextParts.Add("</i></b>");
+        TextParts.Add("</align>");
+    }
+
+    public void H (XmlNode node)
+    {
+        TextParts.Add("\n");
+        TextParts.Add("<align=" + "center" + ">");
+
+        foreach (XmlNode childNode in node.ChildNodes)
+        {
+            Methods[childNode.Name].Invoke(childNode);
+        }
+
+        TextParts.Add("</align>");
+        TextParts.Add("\n");
+    }
+
+    public void EpmtyLine (XmlNode node)
+    {
+        
     }
 
     public void Body (XmlNode node)
@@ -129,7 +173,8 @@ public class EpubGenerator : MonoBehaviour
     {
         foreach (XmlNode childNode in node.ChildNodes)
         {
-            Methods[childNode.Name].Invoke(childNode);
+            if(childNode.Name != "#text")
+                Methods[childNode.Name].Invoke(childNode);
         }
     }
 
@@ -145,10 +190,18 @@ public class EpubGenerator : MonoBehaviour
 
         foreach (XmlNode childNode in node.ChildNodes)
         {
+            print(childNode.Name);
             Methods[childNode.Name].Invoke(childNode);
         }
 
-        TextParts.Add("</align>");
+
+        foreach (XmlAttribute attribute in node.Attributes)
+        {
+            if(attribute.Value == "title1")
+            {
+                TextParts.Add("</align>");
+            }
+        }
     }
 
     void P (XmlNode node)
@@ -158,6 +211,7 @@ public class EpubGenerator : MonoBehaviour
 
         foreach (XmlNode childNode in node.ChildNodes)
         {
+            print(childNode.Name);
             Methods[childNode.Name].Invoke(childNode);
         }
         TextParts.Add("\n");
@@ -202,7 +256,18 @@ public class EpubGenerator : MonoBehaviour
         TextParts[lastWord] = TextParts[lastWord].Remove(lastChar);
     }
 
+    void A (XmlNode node)
+    {
+        TextParts.Add(" <link><color=#0044a3>");
 
+        foreach (XmlNode childNode in node.ChildNodes)
+        {
+            Methods[childNode.Name].Invoke(childNode);
+        }
+        
+        TextParts.Add("</color></link> ");
+
+    }
 
 
 
