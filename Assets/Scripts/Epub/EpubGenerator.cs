@@ -54,13 +54,13 @@ public class EpubGenerator : MonoBehaviour
         Methods.Add("#text", SpalshText);   //Текст
 
         Methods.Add("strong", StrongNew);   //Модификатор жирности текста
-        Methods.Add("b", StrongNew);   //Модификатор жирности текста
+        Methods.Add("b", StrongNew);        //Модификатор жирности текста
 
-        Methods.Add("i", EmphasisNew);     //Модификатор наклона текста
+        Methods.Add("i", EmphasisNew);      //Модификатор наклона текста
 
         Methods.Add("a", A);
 
-        Methods.Add("em", Em);     //Модификатор выделения текста
+        Methods.Add("em", Em);              //Модификатор выделения текста
 
         Methods.Add("img", Image);  
         
@@ -69,6 +69,9 @@ public class EpubGenerator : MonoBehaviour
         Methods.Add("sup", Sup);
 
         Methods.Add("hr", P);
+
+        Methods.Add("blockquote", Blockquote);
+        
 
         Methods.Add("h1", H);
         Methods.Add("h2", H);
@@ -100,9 +103,37 @@ public class EpubGenerator : MonoBehaviour
 
         FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
 
-        EpubFile = new ZipArchive(stream);
+        ICollection<EpubByteFile> images = book.Resources.Images;
 
         bookFolder = Library.pathToBooksFolder + '/' + Path.GetFileNameWithoutExtension(path);
+
+        Directory.CreateDirectory(bookFolder);
+        Directory.CreateDirectory(bookFolder + "/Images");
+
+        foreach (var item in images)
+        {
+            Texture2D tex = new Texture2D(0, 0);
+
+            tex.LoadImage(item.Content);
+
+            if(tex.width * tex.height > 60000)
+            {
+                File.WriteAllBytes(bookFolder + '/' + "/Images/" + "hight" + Path.GetFileNameWithoutExtension(item.AbsolutePath) + ".jpg", tex.EncodeToJPG());
+
+                TextureScale.Bilinear(tex, tex.width/2, tex.height/2);
+                //TextureScale.Bilinear(tex, 200, 300);
+
+                File.WriteAllBytes(bookFolder + '/' + "/Images/" + Path.GetFileNameWithoutExtension(item.AbsolutePath) + ".jpg", tex.EncodeToJPG());
+            }
+            else
+            {
+                File.WriteAllBytes(bookFolder + '/' + "/Images/" + Path.GetFileNameWithoutExtension(item.AbsolutePath) + ".jpg", tex.EncodeToJPG());
+            }
+        }
+
+        EpubFile = new ZipArchive(stream);
+
+        
 
         foreach (var item in chapters)
         {
@@ -173,8 +204,6 @@ public class EpubGenerator : MonoBehaviour
         Resources.UnloadUnusedAssets();
     }
 
-    int ImageCount;
-
     void Image(XmlNode node)
     {
         if(!Directory.Exists(bookFolder))
@@ -185,19 +214,24 @@ public class EpubGenerator : MonoBehaviour
 
         foreach (XmlAttribute attribute in node.Attributes)
         {
-            if(attribute.Name == "src")
+            if(attribute.Name == "src" && attribute.Value != null)
             {
-                ImageCount++;
-
-                EpubFile.GetEntry("OPS/"+attribute.Value).ExtractToFile(bookFolder + "/" + attribute.Value, true);
-
-                string z =  Path.GetFileName(attribute.Value.Replace("\n", ""));
-
-                print(z);
-
-                TextParts.Add("image=" + Path.GetFileName(attribute.Value));
+                TextParts.Add("image=" + Path.GetFileNameWithoutExtension(attribute.Value) + ".jpg");
             }
         }
+    }
+
+    
+    public void Blockquote (XmlNode node)
+    {
+        TextParts.Add("<margin=3em>");
+
+        foreach (XmlNode childNode in node.ChildNodes)
+        {
+            Methods[childNode.Name].Invoke(childNode);
+        }
+
+        TextParts[TextParts.Count-1] += "</margin=5em>";
     }
 
     public void Em (XmlNode node)
@@ -376,7 +410,7 @@ public class EpubGenerator : MonoBehaviour
 
 
 
-        void MakeBook ()
+    void MakeBook ()
     {
         int pageID = -1;
 
@@ -393,14 +427,14 @@ public class EpubGenerator : MonoBehaviour
                 {
                     if(TextParts[i + OnWord].IndexOf("image=") == 0)
                     {
-                        int a = TextParts[i + OnWord].IndexOf(".");
+                        int a = TextParts[i + OnWord].IndexOf(".jpg");
 
 
                         string zaz = TextParts[i + OnWord].Substring(0, a+4);
 
                         PagesText[pageID].NameImages.Add(zaz.Remove(0, 6));
 
-                        PagesText[pageID].PageText += "<b>(Рис." + PagesText[pageID].NameImages.Count + ")</b> ";
+                        PagesText[pageID].PageText += "<b>(Рис." + PagesText[pageID].NameImages.Count + ")</b>";
                     }
                     else
                     {
