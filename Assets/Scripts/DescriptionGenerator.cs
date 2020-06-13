@@ -493,11 +493,11 @@ public class DescriptionGenerator : MonoBehaviour
 
         tex.LoadImage(z);
 
-        if(tex.width * tex.height > 119286)
+        if(tex.width * tex.height > 60000)
         {
             File.WriteAllBytes(BookFolderPath + "/Images/hightCoverImage.jpg", tex.EncodeToJPG());
 
-            TextureScale.Bilinear(tex, 282, 423);
+            TextureScale.Bilinear(tex, 200, 300);
 
             File.WriteAllBytes(BookFolderPath + "/Images/CoverImage.jpg", tex.EncodeToJPG());
         }

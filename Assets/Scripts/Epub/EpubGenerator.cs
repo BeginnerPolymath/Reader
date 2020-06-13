@@ -84,7 +84,7 @@ public class EpubGenerator : MonoBehaviour
             Methods.Add("ul", EpmtyLine);
 
 
-        Methods.Add("br", SpalshText);
+        Methods.Add("br", Br);
         Methods.Add("section", Div);
     }
 
@@ -137,10 +137,12 @@ public class EpubGenerator : MonoBehaviour
 
         foreach (var item in chapters)
         {
-            ChaptersPaths.Add(item.AbsolutePath);
-
-            Chapters.Add(new XmlDocument());
-            Chapters[Chapters.Count-1].Load(EpubFile.GetEntry(item.AbsolutePath.Remove(0, 1)).Open());
+            if(!ChaptersPaths.Contains(item.AbsolutePath))
+            {
+                ChaptersPaths.Add(item.AbsolutePath);
+                Chapters.Add(new XmlDocument());
+                Chapters[Chapters.Count-1].Load(EpubFile.GetEntry(item.AbsolutePath.Remove(0, 1)).Open());
+            }
 
             foreach (var items in item.SubChapters)
             {
@@ -180,6 +182,7 @@ public class EpubGenerator : MonoBehaviour
         OnWord = 0;
         ViweportText.text = string.Empty;
         Chapters.Clear();
+        ChaptersPaths.Clear();
     }
 
     void CoverImage(EpubBook book)
@@ -192,7 +195,7 @@ public class EpubGenerator : MonoBehaviour
         {
             File.WriteAllBytes(bookFolder + "/Images/hightCoverImage.jpg", tex.EncodeToJPG());
 
-            TextureScale.Bilinear(tex, 282, 423);
+            TextureScale.Bilinear(tex, 200, 300);
 
             File.WriteAllBytes(bookFolder + "/Images/CoverImage.jpg", tex.EncodeToJPG());
         }
@@ -221,23 +224,31 @@ public class EpubGenerator : MonoBehaviour
         }
     }
 
+    public void Br (XmlNode node)
+    {
+        TextParts.Add("\n");
+    }
     
+    bool Blockquotes;
+
     public void Blockquote (XmlNode node)
     {
-        TextParts.Add("<margin=3em>");
+        TextParts.Add("\n<indent=10em>");
+        Blockquotes = true;
 
         foreach (XmlNode childNode in node.ChildNodes)
         {
             Methods[childNode.Name].Invoke(childNode);
         }
 
-        TextParts[TextParts.Count-1] += "</margin=5em>";
+        Blockquotes = false;
+
+        TextParts[TextParts.Count-1] += "</indent>\n";
     }
 
     public void Em (XmlNode node)
     {
-        TextParts.Add("<align=" + "center" + ">");
-        TextParts.Add("<b><i>");
+        TextParts.Add("<align=" + "center" + "><b><i>");
 
         foreach (XmlNode childNode in node.ChildNodes)
         {
@@ -249,15 +260,14 @@ public class EpubGenerator : MonoBehaviour
 
     public void H (XmlNode node)
     {
-        TextParts.Add("\n");
-        TextParts.Add("<align=" + "center" + ">");
+        TextParts.Add("\n<align=" + "center" + "><b>");
 
         foreach (XmlNode childNode in node.ChildNodes)
         {
             Methods[childNode.Name].Invoke(childNode);
         }
 
-        TextParts[TextParts.Count-1] += "</align>\n";
+        TextParts[TextParts.Count-1] += "</b></align>\n\n";
     }
 
     public void EpmtyLine (XmlNode node)
@@ -278,7 +288,7 @@ public class EpubGenerator : MonoBehaviour
         foreach (XmlNode childNode in node.ChildNodes)
         {
             
-                Methods[childNode.Name].Invoke(childNode);
+            Methods[childNode.Name].Invoke(childNode);
         }
     }
 
@@ -310,7 +320,7 @@ public class EpubGenerator : MonoBehaviour
 
     void P (XmlNode node)
     {
-        if(node.ParentNode.Name == "section")
+        if(!Blockquotes)
             TextParts.Add("<space=1em>");
 
         foreach (XmlNode childNode in node.ChildNodes)
