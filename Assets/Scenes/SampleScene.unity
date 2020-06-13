@@ -2766,7 +2766,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 12.422974, y: 0}
+  m_AnchoredPosition: {x: 12.422852, y: 0}
   m_SizeDelta: {x: -34.845886, y: -10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &270777868
@@ -14439,7 +14439,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 17.359985, y: 0}
+  m_AnchoredPosition: {x: 17.359863, y: 0}
   m_SizeDelta: {x: 24.971802, y: 90}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1259003429
@@ -18122,7 +18122,7 @@ MonoBehaviour:
   PageID: 0
   PagesText: []
   CountWordsInPage: 300
-  ChaptersString: []
+  ChaptersPaths: []
 --- !u!1 &1636527944
 GameObject:
   m_ObjectHideFlags: 0
@@ -20007,7 +20007,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -71.29999}
+  m_AnchoredPosition: {x: 0, y: -71.299805}
   m_SizeDelta: {x: 0, y: 142.5711}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1823061559

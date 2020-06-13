@@ -265,6 +265,8 @@ public class GeneratorBook : MonoBehaviour
 
         Methods.Add("image", Image);
 
+        Methods.Add("em", Em); 
+
         Methods.Add("a", A);
 
         Methods.Add("sub", Sub);
@@ -383,6 +385,19 @@ public class GeneratorBook : MonoBehaviour
         }
 
         
+    }
+
+    public void Em (XmlNode node)
+    {
+        TextParts.Add("<align=" + "center" + ">");
+        TextParts.Add("<b><i>");
+
+        foreach (XmlNode childNode in node.ChildNodes)
+        {
+            Methods[childNode.Name].Invoke(childNode);
+        }
+
+        TextParts[TextParts.Count-1] += "</align></i></b>";
     }
 
     void Epigraph (XmlNode node)

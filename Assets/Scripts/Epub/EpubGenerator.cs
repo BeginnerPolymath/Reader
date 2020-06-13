@@ -4,7 +4,9 @@ using UnityEngine;
 using System.IO.Compression;
 using System.Xml;
 using System.IO;
+
 using EpubSharp;
+
 using TMPro;
 using MessagePack;
 
@@ -34,6 +36,8 @@ public class EpubGenerator : MonoBehaviour
 
     public List<XmlDocument> Chapters = new List<XmlDocument>();
 
+    public List<string> ChaptersPaths;
+
     ZipArchive EpubFile;
 
 
@@ -56,23 +60,29 @@ public class EpubGenerator : MonoBehaviour
 
         Methods.Add("a", A);
 
-        Methods.Add("em", Em);     //Модификатор наклона текста?
+        Methods.Add("em", Em);     //Модификатор выделения текста
 
+        Methods.Add("img", Image);  
+        
+        Methods.Add("sub", Sub);
 
+        Methods.Add("sup", Sup);
 
-            Methods.Add("h1", H);
-            Methods.Add("h2", H);
-            Methods.Add("h3", H);
-            Methods.Add("h4", H);
-            Methods.Add("h5", H);
-            Methods.Add("h6", H);
+        Methods.Add("hr", P);
+
+        Methods.Add("h1", H);
+        Methods.Add("h2", H);
+        Methods.Add("h3", H);
+        Methods.Add("h4", H);
+        Methods.Add("h5", H);
+        Methods.Add("h6", H);
 
             Methods.Add("ol", EpmtyLine);
             Methods.Add("ul", EpmtyLine);
 
 
-            Methods.Add("br", SpalshText);
-            Methods.Add("section", Div);
+        Methods.Add("br", SpalshText);
+        Methods.Add("section", Div);
     }
 
     void Start()
@@ -92,17 +102,28 @@ public class EpubGenerator : MonoBehaviour
 
         EpubFile = new ZipArchive(stream);
 
+        bookFolder = Library.pathToBooksFolder + '/' + Path.GetFileNameWithoutExtension(path);
+
         foreach (var item in chapters)
         {
+            ChaptersPaths.Add(item.AbsolutePath);
+
             Chapters.Add(new XmlDocument());
             Chapters[Chapters.Count-1].Load(EpubFile.GetEntry(item.AbsolutePath.Remove(0, 1)).Open());
 
-            
+            foreach (var items in item.SubChapters)
+            {
+                if(!ChaptersPaths.Contains(items.AbsolutePath))
+                {
+                    ChaptersPaths.Add(items.AbsolutePath);
+                    Chapters.Add(new XmlDocument());
+                    Chapters[Chapters.Count-1].Load(EpubFile.GetEntry(items.AbsolutePath.Remove(0, 1)).Open());
+                }
+            }
         }
 
         foreach (XmlDocument books in Chapters)
         {
-            print(books.Name);
             XmlNodeList BookNodes = books.GetElementsByTagName("html")[0].ChildNodes;
 
             foreach (XmlNode childNode in BookNodes)
@@ -115,10 +136,13 @@ public class EpubGenerator : MonoBehaviour
         }
 
 
-        bookFolder = Library.pathToBooksFolder + '/' + Path.GetFileNameWithoutExtension(path);
+        
 
         MakeBook();
-        AlternativBook(bookFolder, book.Title);
+        AlternativBook(bookFolder);
+        Description(book);
+
+        CoverImage(book);
 
         Pages = new List<Page>(1);;
         PagesText = new List<PageTextC>();
@@ -127,6 +151,54 @@ public class EpubGenerator : MonoBehaviour
         Chapters.Clear();
     }
 
+    void CoverImage(EpubBook book)
+    {
+        Texture2D tex = new Texture2D(0, 0);
+
+        tex.LoadImage(book.CoverImage);
+
+        if(tex.width * tex.height > 119286)
+        {
+            File.WriteAllBytes(bookFolder + "/Images/hightCoverImage.jpg", tex.EncodeToJPG());
+
+            TextureScale.Bilinear(tex, 282, 423);
+
+            File.WriteAllBytes(bookFolder + "/Images/CoverImage.jpg", tex.EncodeToJPG());
+        }
+        else
+        {
+            File.WriteAllBytes(bookFolder + "/Images/CoverImage.jpg", tex.EncodeToJPG());
+        }
+
+        Resources.UnloadUnusedAssets();
+    }
+
+    int ImageCount;
+
+    void Image(XmlNode node)
+    {
+        if(!Directory.Exists(bookFolder))
+        {
+            Directory.CreateDirectory(bookFolder);
+            Directory.CreateDirectory(bookFolder + "/Images");
+        }
+
+        foreach (XmlAttribute attribute in node.Attributes)
+        {
+            if(attribute.Name == "src")
+            {
+                ImageCount++;
+
+                EpubFile.GetEntry("OPS/"+attribute.Value).ExtractToFile(bookFolder + "/" + attribute.Value, true);
+
+                string z =  Path.GetFileName(attribute.Value.Replace("\n", ""));
+
+                print(z);
+
+                TextParts.Add("image=" + Path.GetFileName(attribute.Value));
+            }
+        }
+    }
 
     public void Em (XmlNode node)
     {
@@ -138,8 +210,7 @@ public class EpubGenerator : MonoBehaviour
             Methods[childNode.Name].Invoke(childNode);
         }
 
-        TextParts.Add("</i></b>");
-        TextParts.Add("</align>");
+        TextParts[TextParts.Count-1] += "</align></i></b>";
     }
 
     public void H (XmlNode node)
@@ -152,8 +223,7 @@ public class EpubGenerator : MonoBehaviour
             Methods[childNode.Name].Invoke(childNode);
         }
 
-        TextParts.Add("</align>");
-        TextParts.Add("\n");
+        TextParts[TextParts.Count-1] += "</align>\n";
     }
 
     public void EpmtyLine (XmlNode node)
@@ -173,7 +243,7 @@ public class EpubGenerator : MonoBehaviour
     {
         foreach (XmlNode childNode in node.ChildNodes)
         {
-            if(childNode.Name != "#text")
+            
                 Methods[childNode.Name].Invoke(childNode);
         }
     }
@@ -199,7 +269,7 @@ public class EpubGenerator : MonoBehaviour
         {
             if(attribute.Value == "title1")
             {
-                TextParts.Add("</align>");
+                TextParts[TextParts.Count-1] += "</align>";
             }
         }
     }
@@ -214,7 +284,7 @@ public class EpubGenerator : MonoBehaviour
             print(childNode.Name);
             Methods[childNode.Name].Invoke(childNode);
         }
-        TextParts.Add("\n");
+        TextParts[TextParts.Count-1] += "\n";
     }
 
     void EmphasisNew (XmlNode node)
@@ -226,7 +296,7 @@ public class EpubGenerator : MonoBehaviour
             Methods[childNode.Name].Invoke(childNode);
         }
 
-        TextParts.Add("</i>");
+        TextParts[TextParts.Count-1] += "</i>";
     }
 
     void StrongNew (XmlNode node)
@@ -238,7 +308,7 @@ public class EpubGenerator : MonoBehaviour
             Methods[childNode.Name].Invoke(childNode);
         }
 
-        TextParts.Add("</b>");
+        TextParts[TextParts.Count-1] += "</b>";
     }
 
     void SpalshText (XmlNode node)
@@ -265,9 +335,34 @@ public class EpubGenerator : MonoBehaviour
             Methods[childNode.Name].Invoke(childNode);
         }
         
-        TextParts.Add("</color></link> ");
-
+        TextParts[TextParts.Count-1] += "</color></link> ";
     }
+
+    void Sub (XmlNode node)
+    {
+        TextParts.Add("<sub>");
+
+        foreach (XmlNode childNode in node.ChildNodes)
+        {
+            Methods[childNode.Name].Invoke(childNode);
+        }
+
+        TextParts.Add("</sub>");
+    }
+
+    void Sup (XmlNode node)
+    {
+        TextParts.Add("<sup>");
+
+        foreach (XmlNode childNode in node.ChildNodes)
+        {
+            Methods[childNode.Name].Invoke(childNode);
+        }
+
+        TextParts.Add("</sup>");
+    }
+
+
 
 
 
@@ -298,7 +393,12 @@ public class EpubGenerator : MonoBehaviour
                 {
                     if(TextParts[i + OnWord].IndexOf("image=") == 0)
                     {
-                        PagesText[pageID].NameImages.Add(TextParts[i + OnWord].Remove(0, 6));
+                        int a = TextParts[i + OnWord].IndexOf(".");
+
+
+                        string zaz = TextParts[i + OnWord].Substring(0, a+4);
+
+                        PagesText[pageID].NameImages.Add(zaz.Remove(0, 6));
 
                         PagesText[pageID].PageText += "<b>(Рис." + PagesText[pageID].NameImages.Count + ")</b> ";
                     }
@@ -417,7 +517,7 @@ public class EpubGenerator : MonoBehaviour
         CharsID.Clear();
     }
 
-    void AlternativBook (string bookFolder, string bookTitle)
+    void AlternativBook (string bookFolder)
     {
         if(!Directory.Exists(bookFolder))
         {
@@ -432,9 +532,24 @@ public class EpubGenerator : MonoBehaviour
         steama = new FileStream(bookFolder + "/pagesText.packNew", FileMode.Create, FileAccess.Write);
         MessagePackSerializer.Serialize(steama, PagesText);
         steama.Close();
+    }
 
-        steama = new FileStream(bookFolder + "/descript.packNew", FileMode.Create, FileAccess.Write);
-        MessagePackSerializer.Serialize(steama, new BookDescription() {BookTitle = bookTitle, PagesCount = PagesText.Count});
+    void Description (EpubBook book)
+    {
+        BookDescription bookDescription = new BookDescription();
+        bookDescription.BookTitle = book.Title;
+        
+        foreach (var item in book.Authors)
+        {
+            bookDescription.Authors.Add(new Autor());
+            bookDescription.Authors[bookDescription.Authors.Count-1].NameParts.Add(item);
+        }
+
+        bookDescription.PagesCount = PagesText.Count;
+        
+
+        FileStream steama = new FileStream(bookFolder + "/descript.packNew", FileMode.Create, FileAccess.Write);
+        MessagePackSerializer.Serialize(steama, bookDescription);
         steama.Close();
     }
 }
