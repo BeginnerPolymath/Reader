@@ -71,7 +71,18 @@ public class EpubGenerator : MonoBehaviour
         Methods.Add("hr", P);
 
         Methods.Add("blockquote", Blockquote);
+
+        Methods.Add("center", Center);
         
+
+
+        Methods.Add("abbr", AbbrAcronym);
+        Methods.Add("acronym", AbbrAcronym);
+        
+
+
+
+
 
         Methods.Add("h1", H);
         Methods.Add("h2", H);
@@ -80,6 +91,11 @@ public class EpubGenerator : MonoBehaviour
         Methods.Add("h5", H);
         Methods.Add("h6", H);
 
+
+            
+            Methods.Add("basefont", EpmtyLine);
+            Methods.Add("base", EpmtyLine);
+            
             Methods.Add("ol", EpmtyLine);
             Methods.Add("ul", EpmtyLine);
 
@@ -223,6 +239,40 @@ public class EpubGenerator : MonoBehaviour
             }
         }
     }
+
+    
+    public void Center (XmlNode node)
+    {
+        TextParts.Add("<align=" + "center" + ">");
+
+        foreach (XmlNode childNode in node.ChildNodes)
+        {
+            Methods[childNode.Name].Invoke(childNode);
+        }
+        
+        TextParts[TextParts.Count-1] += "</align>";
+    }
+
+    public void AbbrAcronym (XmlNode node)
+    {
+        TextParts.Add("<u>");
+
+        foreach (XmlNode childNode in node.ChildNodes)
+        {
+            Methods[childNode.Name].Invoke(childNode);
+        }
+        
+        TextParts[TextParts.Count-1] += "</u>";
+
+        foreach (XmlAttribute attribute in node.Attributes)
+        {
+            if(attribute.Name == "title")
+            {
+                TextParts.Add($" ({attribute.Value}) ");
+            }
+        }
+    }
+
 
     public void Br (XmlNode node)
     {
@@ -372,7 +422,7 @@ public class EpubGenerator : MonoBehaviour
 
     void A (XmlNode node)
     {
-        TextParts.Add(" <link><color=#0044a3>");
+        TextParts.Add(" <link><color=#5abce0>");
 
         foreach (XmlNode childNode in node.ChildNodes)
         {
