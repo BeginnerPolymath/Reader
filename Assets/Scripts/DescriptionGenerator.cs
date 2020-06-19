@@ -316,8 +316,8 @@ public class DescriptionGenerator : MonoBehaviour
         Methods.Add("PIsequence", PISequence);
 
         
-
-
+            Methods.Add("Tid", EmptyLine);
+            Methods.Add("id", EmptyLine);
             Methods.Add("custom-info", EmptyLine);
             Methods.Add("output", EmptyLine);
 
@@ -415,6 +415,7 @@ public class DescriptionGenerator : MonoBehaviour
         _BookDescription.Authors.Add(new Autor() { NameParts = new List<string>() });
         foreach (XmlNode childNode in node.ChildNodes)
         {
+            print(childNode.Name);
             Methods[childNode.Name].Invoke(childNode);
         }
     }
