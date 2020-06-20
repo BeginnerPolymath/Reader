@@ -389,7 +389,6 @@ public class GeneratorBook : MonoBehaviour
 
     public void Em (XmlNode node)
     {
-        TextParts.Add("<align=" + "center" + ">");
         TextParts.Add("<b><i>");
 
         foreach (XmlNode childNode in node.ChildNodes)
@@ -397,7 +396,7 @@ public class GeneratorBook : MonoBehaviour
             Methods[childNode.Name].Invoke(childNode);
         }
 
-        TextParts[TextParts.Count-1] += "</align></i></b>";
+        TextParts[TextParts.Count-1] += "</i></b>";
     }
 
     void Epigraph (XmlNode node)

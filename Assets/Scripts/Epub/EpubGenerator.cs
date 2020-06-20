@@ -298,14 +298,14 @@ public class EpubGenerator : MonoBehaviour
 
     public void Em (XmlNode node)
     {
-        TextParts.Add("<align=" + "center" + "><b><i>");
+        TextParts.Add("<b><i>");
 
         foreach (XmlNode childNode in node.ChildNodes)
         {
             Methods[childNode.Name].Invoke(childNode);
         }
 
-        TextParts[TextParts.Count-1] += "</align></i></b>";
+        TextParts[TextParts.Count-1] += "</i></b>";
     }
 
     public void H (XmlNode node)
