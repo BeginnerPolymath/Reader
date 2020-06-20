@@ -486,8 +486,31 @@ public class DescriptionGenerator : MonoBehaviour
     {
         Texture2D tex = new Texture2D(0, 0);
 
-        string a = node.Attributes["l:href"].Value;
-        a = a.Remove(0, 1);
+        string a = "";
+
+        foreach (XmlAttribute item in node.Attributes)
+        {
+            if(item.Name.Contains(":href"))
+            {
+                a = node.Attributes[item.Name].Value;
+                a = a.Remove(0, 1);
+                break;
+            }
+
+        }
+
+        // if(node.Attributes["l:href"] != null)
+        // {
+        //     a = node.Attributes["l:href"].Value;
+        //     a = a.Remove(0, 1);
+        // }
+        // else if(node.Attributes["xlink:href"] != null)
+        // {
+        //     a = node.Attributes["xlink:href"].Value;
+        //     a = a.Remove(0, 1);
+        // }
+
+        
 
         byte[] z = Convert.FromBase64String(BookFile.SelectSingleNode($"//*[@id = '{a}']").InnerText);
         
