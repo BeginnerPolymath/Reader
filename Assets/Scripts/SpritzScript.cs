@@ -33,6 +33,8 @@ public class Settings
 
     public int UnCoefWordLength = 6;
 
+    public bool SpritzMode = false;
+
     public Vector2 SpritzWindowPosition = new Vector2(0, -200);
 
     public Vector2 SpritzStartButtonPosition = new Vector2(356, -377);
@@ -153,8 +155,20 @@ public class SpritzScript : MonoBehaviour
         PauseBeginReadTimeIF.text = (settings.PauseBeginReadTime*1000).ToString();
         PauseBeginReadTime = settings.PauseBeginReadTime;
 
+        //Сохранение длины отображаемого слова, которое не считается через коэффициент
+
         UnCoefWordLength = settings.UnCoefWordLength;
 
+        //Сохранение режима активации SpritZ
+
+        SpritzMode = settings.SpritzMode;
+
+        if(SpritzMode)
+            SpritzModeText.text = NameModes[1];
+        else
+            SpritzModeText.text = NameModes[0];
+
+        //Сохранение позиций панели со SpritZ словом и кнопки SpritZ
 
         SpritzWindow.anchoredPosition  = settings.SpritzWindowPosition;
         SpritzStartButton.anchoredPosition = settings.SpritzStartButtonPosition;
@@ -183,6 +197,8 @@ public class SpritzScript : MonoBehaviour
         settings.SpritzStartButtonPosition = SpritzStartButton.anchoredPosition;
 
         settings.UnCoefWordLength = UnCoefWordLength;
+
+        settings.SpritzMode = SpritzMode;
 
         FileStream steams = new FileStream(Application.persistentDataPath + "/ReadSetting.newPack", FileMode.OpenOrCreate, FileAccess.ReadWrite);
         MessagePackSerializer.Serialize(steams, settings);
@@ -311,9 +327,43 @@ public class SpritzScript : MonoBehaviour
 
     public bool StartReadTime;
 
+    [Space(10)]
+
+    public GameObject ReadFade;
+    public bool SpritzMode;
+
+    public TextMeshProUGUI SpritzModeText;
+
+    string[] NameModes =
+    {
+        "Удержание",
+        "Нажатие"
+    };
+
+    public void SetSpritzMode ()
+    {
+        SpritzMode = !SpritzMode;
+
+        if(SpritzMode)
+            SpritzModeText.text = NameModes[1];
+        else
+            SpritzModeText.text = NameModes[0];
+
+        SaveReadSettingFile ();
+    }
+
     public void StartRead ()
     {
-        StartReadTime = true;
+        if(!SpritzMode)
+        {
+            ReadFade.SetActive(true);
+            StartReadTime = true;
+        }
+        else
+        {
+            ReadFade.SetActive(!ReadFade.activeSelf);
+            isSpritz = !isSpritz;
+        }
     }  
 
     void PauseReadStart ()
@@ -332,11 +382,16 @@ public class SpritzScript : MonoBehaviour
 
     public void SpritzUp ()
     {
-        timeWord = SpritZChars.Count * CoeffChar;
-        isSpritz = false;
+        if(!SpritzMode)
+        {
+            ReadFade.SetActive(false);
 
-        PRTime = 0;
-        StartReadTime = false;
+            timeWord = SpritZChars.Count * CoeffChar;
+            isSpritz = false;
+
+            PRTime = 0;
+            StartReadTime = false;
+        }
     }
 
     public bool isSpritz;
@@ -754,7 +809,7 @@ public class SpritzScript : MonoBehaviour
 
             SpritZChars[SpritZChars.Count-1].text += wHTMP.m_TextMeshPro.textInfo.characterInfo[z].character;
             SpritZChars[SpritZChars.Count-1].color = wHTMP.m_TextMeshPro.textInfo.characterInfo[z].color;
-            SpritZChars[SpritZChars.Count-1].fontStyle = wHTMP.m_TextMeshPro.textInfo.characterInfo[z].style;
+            //SpritZChars[SpritZChars.Count-1].fontStyle = wHTMP.m_TextMeshPro.textInfo.characterInfo[z].style;
 
             int idLine = wHTMP.m_TextMeshPro.textInfo.characterInfo[z].lineNumber;
 

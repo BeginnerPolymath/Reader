@@ -43,6 +43,17 @@ public class EpubGenerator : MonoBehaviour
 
     void InitializeMethods()
     {
+        Methods.Add("a", A);
+        Methods.Add("abbr", AbbrAcronym);
+        Methods.Add("acronym", AbbrAcronym);
+
+        Methods.Add("address", EmphasisNew);
+            Methods.Add("applet", EpmtyLine);   //Что-то с Java
+            Methods.Add("area", EpmtyLine);     //Дичь с рисунками и ссылками на них в формате отдельный HTLM файлов (нужно тестануть в ibooks)
+        Methods.Add("article", P);              //Вроде обычный текст, на всякий проверить в iBooks
+        
+        
+
         Methods.Add("body", Body);          //Тело документа
 
         Methods.Add("span", Span);          //ID главый или подглавы
@@ -58,7 +69,7 @@ public class EpubGenerator : MonoBehaviour
 
         Methods.Add("i", EmphasisNew);      //Модификатор наклона текста
 
-        Methods.Add("a", A);
+        
 
         Methods.Add("em", Em);              //Модификатор выделения текста
 
@@ -76,8 +87,7 @@ public class EpubGenerator : MonoBehaviour
         
 
 
-        Methods.Add("abbr", AbbrAcronym);
-        Methods.Add("acronym", AbbrAcronym);
+        
         
 
 
@@ -418,6 +428,11 @@ public class EpubGenerator : MonoBehaviour
         int lastChar = TextParts[lastWord].Length - 1;
 
         TextParts[lastWord] = TextParts[lastWord].Remove(lastChar);
+
+        foreach (XmlNode childNode in node.ChildNodes)
+        {
+            Methods[childNode.Name].Invoke(childNode);
+        }
     }
 
     void A (XmlNode node)

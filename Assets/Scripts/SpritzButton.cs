@@ -15,6 +15,13 @@ public class SpritzButton : MonoBehaviour, IDragHandler
 
         rectTransform.anchoredPosition += eventDataZ.delta * ScreenSizer.DragShiftCoef;
 
-        rectTransform.anchoredPosition = new Vector2(Mathf.Clamp(rectTransform.anchoredPosition.x, -(Canvas.rect.width - rectTransform.rect.width), (Canvas.rect.width - rectTransform.rect.width)), Mathf.Clamp(rectTransform.anchoredPosition.y, -(Canvas.rect.height - rectTransform.rect.height) / 2, (Canvas.rect.height - rectTransform.rect.height) / 2));
+        rectTransform.anchoredPosition = new Vector2
+        (
+
+            Mathf.Clamp(rectTransform.anchoredPosition.x, -(Canvas.rect.width - rectTransform.rect.width) / 2, (Canvas.rect.width - rectTransform.rect.width) / 2)
+            , 
+            Mathf.Clamp(rectTransform.anchoredPosition.y, -(Canvas.rect.height - rectTransform.rect.height) / 2, (Canvas.rect.height - rectTransform.rect.height) / 2)
+
+        );
     }
 }
