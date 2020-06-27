@@ -551,11 +551,7 @@ public class SpritzScript : MonoBehaviour
 
                 NextSpritzWord ();
 
-                _ReadInfo.PageID = PageID;
-                _ReadInfo.WordID = WordID;
-
                 SavePages();
-                _Book.PageCounter.text = (PageID + 1).ToString() + "/" + PagesText.Count.ToString();
 
                 CalculateTime ();
             }
@@ -630,6 +626,11 @@ public class SpritzScript : MonoBehaviour
 
     async void SavePages()
     {
+        _ReadInfo.PageID = PageID;
+        _ReadInfo.WordID = WordID;
+
+        _Book.PageCounter.text = (PageID + 1).ToString() + "/" + PagesText.Count.ToString();
+
         if(CanSave)
         {
             CanSave = false;
@@ -773,11 +774,7 @@ public class SpritzScript : MonoBehaviour
         if(!LoadReadInfo && SpritzContent.activeSelf)
             SetSpritzWord(0, WordInTextColor);
 
-        _ReadInfo.PageID = PageID;
-        _ReadInfo.WordID = WordID;
-
         SavePages();
-        _Book.PageCounter.text = (PageID + 1).ToString() + "/" + PagesText.Count.ToString();
     }
 
     public void SetNumberPage (string number)
@@ -883,11 +880,7 @@ public class SpritzScript : MonoBehaviour
             ContainerSpritZChar.anchoredPosition += new Vector2(contentWordShift * ScreenSizer.DragShiftCoef, 0);
         }
 
-        _ReadInfo.PageID = PageID;
-        _ReadInfo.WordID = WordID;
-
         SavePages();
-        _Book.PageCounter.text = (PageID + 1).ToString() + "/" + PagesText.Count.ToString();
     }
 
     //Функция выбора слова из текста - назначение на спритз и выделение зеленым цветом/прошлое слово серым (если есть)
