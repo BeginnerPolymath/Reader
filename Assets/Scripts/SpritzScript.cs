@@ -432,7 +432,7 @@ public class SpritzScript : MonoBehaviour
                 _FindTextScript.ClearAll();
                 _FindTextScript.gameObject.SetActive(false);
             }
-            else if(_SettingsScript.OpenWindow == false)  
+            else if(_SettingsScript.OpenWindow == false)
             {
                 _SettingsScript.Close();
             }
