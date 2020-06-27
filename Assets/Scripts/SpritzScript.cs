@@ -681,6 +681,8 @@ public class SpritzScript : MonoBehaviour
 
     public static Color32 WordInTextColor = new Color32(112, 197, 82, 255);
 
+    public GameObject SpritzContent;
+
     public void SetPage (int pageID, bool LoadReadInfo = false)
     {
         ClearImages ();
@@ -726,14 +728,17 @@ public class SpritzScript : MonoBehaviour
             }
         }
 
-        if(SpritzWindow.anchoredPosition.y > Screen.height / -2)
+        if(SpritzContent.activeSelf)
         {
-            ViweportText.transform.parent.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-            ViweportText.transform.parent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -(SpritzWindow.rect.height/2) + SpritzWindow.anchoredPosition.y);
-        }
-        else if(SpritzWindow.anchoredPosition.y < Screen.height / -2)
-        {
-            ViweportText.transform.parent.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+            if(SpritzWindow.anchoredPosition.y > Screen.height / -2)
+            {
+                ViweportText.transform.parent.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                ViweportText.transform.parent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -(SpritzWindow.rect.height/2) + SpritzWindow.anchoredPosition.y);
+            }
+            else if(SpritzWindow.anchoredPosition.y < Screen.height / -2)
+            {
+                ViweportText.transform.parent.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+            }
         }
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(ViweportText.rectTransform);
