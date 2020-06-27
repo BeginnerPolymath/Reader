@@ -20,6 +20,8 @@ public struct ReadInfo
 [MessagePackObject(keyAsPropertyName: true)]
 public class Settings
 {
+    public bool SpritZActivated = false;
+
     public float SpritZSize = 60;
     public float TextBookSize = 36;
     public float DescriptSize = 25;
@@ -89,46 +91,24 @@ public class SpritzScript : MonoBehaviour
         
 
         LoadReadSettingFile ();
+
+        
     }
 
     void LoadDEFAULTReadSetting ()
     {
-        Settings settings = new Settings();
-
-        SizeSpritzWordIF.text = settings.SpritZSize.ToString();
-        PrefabSpritZChar.GetComponent<TextMeshProUGUI>().fontSize = settings.SpritZSize;
-
-        SizeTextBookIF.text = settings.TextBookSize.ToString();
-        ViweportText.fontSize = settings.TextBookSize;
-
-        SizeDescriptIF.text = settings.DescriptSize.ToString();
-        Descript.Annotation.fontSize = settings.DescriptSize;
-
-
-        CoefCharIF.text = (settings.CharCoeffTime*1000).ToString();
-        CoeffChar = settings.CharCoeffTime;
-
-        EndPunctuationIF.text = (settings.EndPunctCoeffTime*1000).ToString();
-        EndPunctuationCoeff = settings.EndPunctCoeffTime;
-
-        PunctuationIF.text = (settings.PunctCoeffTime*1000).ToString();
-        PunctuationCoeff = settings.PunctCoeffTime;
-
-        HighcapIF.text = (settings.HighcapCoeffTime*1000).ToString();
-        HighcapCoeff = settings.HighcapCoeffTime;
-
-        PauseBeginReadTimeIF.text = (settings.PauseBeginReadTime*1000).ToString();
-        PauseBeginReadTime = settings.PauseBeginReadTime;
-
-
-        SpritzWindow.anchoredPosition  = settings.SpritzWindowPosition;
-        SpritzStartButton.anchoredPosition = settings.SpritzStartButtonPosition;
+        //
     }
 
     void LoadReadSettingFile ()
     {
         FileStream filez = File.Open(Application.persistentDataPath + "/ReadSetting.newPack", FileMode.Open);
         Settings settings = MessagePackSerializer.Deserialize<Settings>(filez);
+        filez.Close();
+
+        SpritzContent.SetActive(settings.SpritZActivated);
+        SprtiZActivatedToggle.isOn = SpritzContent.activeSelf;
+    
 
         SizeSpritzWordIF.text = settings.SpritZSize.ToString();
         PrefabSpritZChar.GetComponent<TextMeshProUGUI>().fontSize = settings.SpritZSize;
@@ -172,9 +152,6 @@ public class SpritzScript : MonoBehaviour
 
         SpritzWindow.anchoredPosition  = settings.SpritzWindowPosition;
         SpritzStartButton.anchoredPosition = settings.SpritzStartButtonPosition;
-
-
-        filez.Close();
     }
 
     public void SaveReadSettingFile ()
@@ -182,6 +159,8 @@ public class SpritzScript : MonoBehaviour
         FileStream filez = File.Open(Application.persistentDataPath + "/ReadSetting.newPack", FileMode.Open);
         Settings settings = MessagePackSerializer.Deserialize<Settings>(filez);
         filez.Close();
+
+        settings.SpritZActivated = SpritzContent.activeSelf;
 
         settings.SpritZSize = PrefabSpritZChar.GetComponent<TextMeshProUGUI>().fontSize;
         settings.TextBookSize = ViweportText.fontSize;
@@ -229,7 +208,7 @@ public class SpritzScript : MonoBehaviour
         PrefabSpritZChar.GetComponent<TextMeshProUGUI>().fontSize = size;
         SizeSpritzWordIF.text = size.ToString();
 
-        if(!_Library.gameObject.activeSelf)
+        if(!_Library.gameObject.activeSelf && SpritzContent.activeSelf)
             SetSpritzWord(WordID, WordInTextColor);
 
         SaveReadSettingFile ();
@@ -312,6 +291,28 @@ public class SpritzScript : MonoBehaviour
         SaveReadSettingFile ();
     }
 
+    public Toggle SprtiZActivatedToggle;
+
+    public void SpritZMethodActivated (bool enable)
+    {
+        if(enable && !_Library.gameObject.activeSelf)
+        {
+            SetPage(PageID);
+
+            ViweportText.transform.parent.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+            ViweportText.transform.parent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -(SpritzWindow.rect.height/2) + SpritzWindow.anchoredPosition.y);
+        }
+        else if(!enable && !_Library.gameObject.activeSelf)
+        {
+            ViweportText.transform.parent.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+
+            ViweportText.gameObject.SetActive(false);
+            ViweportText.gameObject.SetActive(true);
+        }
+
+        SaveReadSettingFile ();
+    }
+
 
     public void SpritzDown ()
     {
@@ -340,6 +341,8 @@ public class SpritzScript : MonoBehaviour
         "Нажатие"
     };
 
+    public Button OpenFindWindowButton, OpenSettingsWindowButton;
+
     public void SetSpritzMode ()
     {
         SpritzMode = !SpritzMode;
@@ -358,11 +361,16 @@ public class SpritzScript : MonoBehaviour
         {
             ReadFade.SetActive(true);
             StartReadTime = true;
+
+
         }
         else
         {
             ReadFade.SetActive(!ReadFade.activeSelf);
             isSpritz = !isSpritz;
+
+            OpenFindWindowButton.interactable = !OpenFindWindowButton.interactable;
+            OpenSettingsWindowButton.interactable = !OpenSettingsWindowButton.interactable;
         }
     }  
 
@@ -689,7 +697,8 @@ public class SpritzScript : MonoBehaviour
 
         ImagesContent.anchoredPosition = Vector2.zero;
 
-        timeWord += 0.3f;
+        if(SpritzContent.activeSelf)
+            timeWord += 0.3f;
 
         PageID = pageID;
         PageInfo.text = (PageID + 1).ToString() + '/' + Pages.Count;
@@ -740,6 +749,11 @@ public class SpritzScript : MonoBehaviour
                 ViweportText.transform.parent.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
             }
         }
+        else
+        {
+            ViweportText.transform.parent.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+            //ViweportText.transform.parent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -(SpritzWindow.rect.height/2) + SpritzWindow.anchoredPosition.y);
+        }
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(ViweportText.rectTransform);
         LayoutRebuilder.ForceRebuildLayoutImmediate(ContentText);
@@ -753,9 +767,10 @@ public class SpritzScript : MonoBehaviour
 
         WordID = 0;
 
-        LoadColorSpritzStep ();
+        if(SpritzContent.activeSelf)
+            LoadColorSpritzStep ();
 
-        if(!LoadReadInfo)
+        if(!LoadReadInfo && SpritzContent.activeSelf)
             SetSpritzWord(0, WordInTextColor);
     }
 
@@ -932,10 +947,12 @@ public class SpritzScript : MonoBehaviour
 
     public void TextForceUpdate ()
     {
-        Canvas.ForceUpdateCanvases();
+        if(SpritzContent.activeSelf)
+        {
+            Canvas.ForceUpdateCanvases();
     
-        LoadColorSpritzStep();
-        SetSpritzWord(WordID, WordInTextColor);
-        
+            LoadColorSpritzStep();
+            SetSpritzWord(WordID, WordInTextColor);
+        }
     }
 }

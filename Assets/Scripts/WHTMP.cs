@@ -60,18 +60,18 @@ public class WHTMP : MonoBehaviour
     public void OnPointerClick(PointerEventData eventData)
     {
         int charIndex = TMP_TextUtilities.FindNearestCharacter(m_TextMeshPro, eventData.position, eventData.enterEventCamera, true);
-        
+    
         if(charIndex != -1)
         {
             if(StepIDRem != -1)
                 ChangeColorChars (spritzScript.PageID, StepIDRem, spritzScript.Colors[1]);
 
-
-            spritzScript.ClickWordInText(charIndex);
+            
+                spritzScript.ClickWordInText(charIndex);
             
             
         }
-    }
+}
 
     public void ZoomWord(PointerEventData eventData)
     {

@@ -30,7 +30,15 @@ public class ScrollView : MonoBehaviour, IDragHandler, IPointerDownHandler, IPoi
 
                 // BookTextView.anchoredPosition = new Vector2(0, Mathf.Clamp(BookTextView.anchoredPosition.y, -(SpritzWindow.rect.height / 2) + SpritzWindow.anchoredPosition.y, BookTextView.rect.height - Screen.height + SpritzWindow.rect.height));
 
-                BookTextView.anchoredPosition = new Vector2(0, Mathf.Clamp(BookTextView.anchoredPosition.y, -canvas.rect.height + 70, BookTextView.sizeDelta.y - 130));
+                if(Spritz.SpritzContent.activeSelf)
+                {
+                    BookTextView.anchoredPosition = new Vector2(0, Mathf.Clamp(BookTextView.anchoredPosition.y, -canvas.rect.height + 70, BookTextView.sizeDelta.y - 130));
+                }
+                else
+                {
+                    BookTextView.anchoredPosition = new Vector2(0, Mathf.Clamp(BookTextView.anchoredPosition.y, 0, BookTextView.sizeDelta.y - canvas.sizeDelta.y));
+                }
+                
             }
 
             if(eventData.y > 20)
@@ -88,17 +96,10 @@ public class ScrollView : MonoBehaviour, IDragHandler, IPointerDownHandler, IPoi
 
     void Update ()
     {
-        if(!BeginScroll && ZoomBegin && !ZoomStart)
+        if(!BeginScroll && ZoomBegin && !ZoomStart && Spritz.SpritzContent.activeSelf)
         {
             ZoomTimer ();
         }
-        else
-        {
-
-        }
-
-        
-
     }
 
     public bool ZoomBegin;
@@ -125,7 +126,7 @@ public class ScrollView : MonoBehaviour, IDragHandler, IPointerDownHandler, IPoi
     {
         if(eventData.button == PointerEventData.InputButton.Left)
         {
-            if(!BeginScroll)
+            if(!BeginScroll && Spritz.SpritzContent.activeSelf)
                 wHTMP.OnPointerClick(eventData);
             
             BeginScroll = false;
