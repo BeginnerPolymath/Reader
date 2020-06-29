@@ -207,9 +207,10 @@ namespace EpubSharp
 
                 if (entry == null)
                 {
-                    throw new EpubParseException($"file {path} not found in archive.");
+                    //throw new EpubParseException($"file {path} not found in archive.");
+                    return null;
                 }
-                if (entry.Length > int.MaxValue)
+                else if (entry.Length > int.MaxValue)
                 {
                     throw new EpubParseException($"file {path} is bigger than 2 Gb.");
                 }

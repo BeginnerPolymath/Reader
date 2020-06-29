@@ -33,7 +33,8 @@ namespace EpubSharp
             var entry = TryGetEntryImproved(archive, entryName);
             if (entry == null)
             {
-                throw new EpubParseException($"{entryName} file not found in archive.");
+                //throw new EpubParseException($"{entryName} file not found in archive.");
+                return null;
             }
             return entry;
         }
