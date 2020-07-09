@@ -130,18 +130,18 @@ public class FileManager : MonoBehaviour
             file.SetText(pathToFolder, nameFolder[nameFolder.Length-1]);
         }
 
-        foreach (string pathToFolder in Directory.GetFiles(path, "*.epub"))
-        {
-            FileScript file = Instantiate(FilePrefab, Content).GetComponent<FileScript>();
-            file._FileManager = this;
-            file.File = true;
-            file.ButtonImage.color = new Color32(204, 143, 63, 255);
+        // foreach (string pathToFolder in Directory.GetFiles(path, "*.epub"))
+        // {
+        //     FileScript file = Instantiate(FilePrefab, Content).GetComponent<FileScript>();
+        //     file._FileManager = this;
+        //     file.File = true;
+        //     file.ButtonImage.color = new Color32(204, 143, 63, 255);
 
-            Files.Add(file.gameObject);
+        //     Files.Add(file.gameObject);
 
-            string[] nameFolder = pathToFolder.Split('/');
-            file.SetText(pathToFolder, nameFolder[nameFolder.Length-1]);
-        }
+        //     string[] nameFolder = pathToFolder.Split('/');
+        //     file.SetText(pathToFolder, nameFolder[nameFolder.Length-1]);
+        // }
     }
 
     public RectTransform ExpContent;
