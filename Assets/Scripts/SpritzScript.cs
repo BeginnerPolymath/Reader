@@ -36,6 +36,7 @@ public class Settings
     public float UpShiftReader = 0f;
 
     public int UnCoefWordLength = 6;
+    public float UnCoefTime = 0.2f;
 
     public bool SpritzMode = false;
 
@@ -145,7 +146,11 @@ public class SpritzScript : MonoBehaviour
 
         //Сохранение длины отображаемого слова, которое не считается через коэффициент
 
+        UnCoefWordLengthIF.text = settings.UnCoefWordLength.ToString();
         UnCoefWordLength = settings.UnCoefWordLength;
+
+        UnCoefTimeIF.text = (settings.UnCoefTime*1000).ToString();
+        UnCoefTime = settings.UnCoefTime;
 
         //Сохранение режима активации SpritZ
 
@@ -188,6 +193,7 @@ public class SpritzScript : MonoBehaviour
         settings.SpritzStartButtonPosition = SpritzStartButton.anchoredPosition;
 
         settings.UnCoefWordLength = UnCoefWordLength;
+        settings.UnCoefTime = UnCoefTime;
 
         settings.SpritzMode = SpritzMode;
 
@@ -319,6 +325,23 @@ public class SpritzScript : MonoBehaviour
         }
         
         SaveReadSettingFile ();
+    }
+
+    public TMP_InputField UnCoefTimeIF;
+
+    public float UnCoefTime = 0.2f;
+
+    public void SetUnCoefTime(string value)
+    {
+        UnCoefTime = float.Parse(value) / 1000;
+
+        if (UnCoefTime > 1 || UnCoefTime < 0)
+        {
+            UnCoefTime = Mathf.Clamp(UnCoefTime, 0, 1);
+            UnCoefTimeIF.text = (UnCoefTime * 1000).ToString();
+        }
+
+        SaveReadSettingFile();
     }
 
     public Toggle SprtiZActivatedToggle;
@@ -646,7 +669,7 @@ public class SpritzScript : MonoBehaviour
             if(SpritZChars.Count > UnCoefWordLength)
                 timeWord += SpritZChars.Count * CoeffChar;
             else
-                timeWord += 0.2f;
+                timeWord += UnCoefTime;
         }
     }
 
