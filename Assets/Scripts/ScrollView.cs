@@ -30,14 +30,14 @@ public class ScrollView : MonoBehaviour, IDragHandler, IPointerDownHandler, IPoi
                     BeginScroll = true;
                     BookTextView.anchoredPosition += new Vector2(0, eventData.y);
 
-                    BookTextView.anchoredPosition = new Vector2(0, Mathf.Clamp(BookTextView.anchoredPosition.y, -canvas.rect.height + 70, BookTextView.sizeDelta.y - 130));
+                    BookTextView.anchoredPosition = new Vector2(0, Mathf.Clamp(BookTextView.anchoredPosition.y, -canvas.rect.height + 70 + Spritz.UpShift, BookTextView.sizeDelta.y - 130 + Spritz.UpShift));
                 }
                 else if(BookTextView.rect.height > canvas.rect.height && !Spritz.SpritzContent.activeSelf)
                 {
                     BeginScroll = true;
                     BookTextView.anchoredPosition += new Vector2(0, eventData.y);
 
-                    BookTextView.anchoredPosition = new Vector2(0, Mathf.Clamp(BookTextView.anchoredPosition.y, 0, BookTextView.sizeDelta.y - canvas.sizeDelta.y));
+                    BookTextView.anchoredPosition = new Vector2(0, Mathf.Clamp(BookTextView.anchoredPosition.y, 0, BookTextView.sizeDelta.y - canvas.sizeDelta.y + Spritz.UpShift));
                 }
             }
 

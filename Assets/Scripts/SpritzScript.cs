@@ -33,6 +33,8 @@ public class Settings
 
     public float PauseBeginReadTime = 0.3f;
 
+    public float UpShiftReader = 0f;
+
     public int UnCoefWordLength = 6;
 
     public bool SpritzMode = false;
@@ -56,6 +58,8 @@ public class SpritzScript : MonoBehaviour
         public WHTMP wHTMP;
 
         public TextMeshProUGUI ViweportText;
+
+        public RectTransform ReaderMainPanel;
 
 
         public List<Page> Pages = new List<Page>(1);
@@ -135,6 +139,10 @@ public class SpritzScript : MonoBehaviour
         PauseBeginReadTimeIF.text = (settings.PauseBeginReadTime*1000).ToString();
         PauseBeginReadTime = settings.PauseBeginReadTime;
 
+
+        UpShiftInputField.text = settings.UpShiftReader.ToString();
+        UpShift = settings.UpShiftReader;
+
         //Сохранение длины отображаемого слова, которое не считается через коэффициент
 
         UnCoefWordLength = settings.UnCoefWordLength;
@@ -152,6 +160,8 @@ public class SpritzScript : MonoBehaviour
 
         SpritzWindow.anchoredPosition  = settings.SpritzWindowPosition;
         SpritzStartButton.anchoredPosition = settings.SpritzStartButtonPosition;
+
+        ReaderMainPanel.offsetMax = new Vector2(0, -UpShift);
     }
 
     public void SaveReadSettingFile ()
@@ -171,6 +181,8 @@ public class SpritzScript : MonoBehaviour
         settings.PunctCoeffTime = PunctuationCoeff;
         settings.HighcapCoeffTime = HighcapCoeff;
         settings.PauseBeginReadTime = PauseBeginReadTime;
+
+        settings.UpShiftReader = UpShift;
 
         settings.SpritzWindowPosition = SpritzWindow.anchoredPosition;
         settings.SpritzStartButtonPosition = SpritzStartButton.anchoredPosition;
@@ -272,6 +284,24 @@ public class SpritzScript : MonoBehaviour
         }
         
         SaveReadSettingFile ();
+    }
+
+    public TMP_InputField UpShiftInputField;
+
+    public float UpShift = 0;
+
+    public void SetUpShiftReader(string value)
+    {
+        UpShift = float.Parse(value);
+
+        if (UpShift <= 0f || UpShift > 100f)
+        {
+            UpShift = Mathf.Clamp(CoeffChar, 0f, 100f);
+            UpShiftInputField.text = (CoeffChar * 1).ToString();
+        }
+
+        ReaderMainPanel.offsetMax = new Vector2(0, -UpShift);
+        SaveReadSettingFile();
     }
 
     public TMP_InputField UnCoefWordLengthIF;
@@ -465,7 +495,7 @@ public class SpritzScript : MonoBehaviour
 
     public float CoeffChar = 0.015f;
 
-    public void SetCoefChar (string value)
+    public void SetCoefChar(string value)
     {
         CoeffChar = float.Parse(value) / 1000;
 
