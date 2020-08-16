@@ -24378,6 +24378,8 @@ MonoBehaviour:
   SizeDescriptIF: {fileID: 344005840}
   PauseBeginReadTimeIF: {fileID: 670384203}
   PauseBeginReadTime: 0.3
+  PauseBeginTime: 0
+  StartReadTime: 0
   UpShiftInputField: {fileID: 1734063374}
   UpShift: 0
   UnCoefWordLengthIF: {fileID: 792201358}
@@ -24385,9 +24387,6 @@ MonoBehaviour:
   UnCoefTimeIF: {fileID: 1978089814}
   UnCoefTime: 0.2
   SprtiZActivatedToggle: {fileID: 1584643690}
-  PRTime: 0
-  PauseReadTimer: 0.5
-  StartReadTime: 0
   ReadFade: {fileID: 1850968224}
   SpritzMode: 0
   SpritzModeText: {fileID: 581209049}

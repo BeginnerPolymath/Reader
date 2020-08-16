@@ -279,6 +279,10 @@ public class SpritzScript : MonoBehaviour
 
     public float PauseBeginReadTime = 0.3f;
 
+    public float PauseBeginTime;
+
+    public bool StartReadTime;
+
     public void SetPauseBeginReadTime (string value)
     {
         PauseBeginReadTime = float.Parse(value) / 1000;
@@ -320,7 +324,7 @@ public class SpritzScript : MonoBehaviour
 
         if(UnCoefWordLength > 10 || UnCoefWordLength < 0)
         {
-            UnCoefWordLength = (int)Mathf.Clamp(PauseBeginReadTime, 0, 10);
+            UnCoefWordLength = (int)Mathf.Clamp(UnCoefWordLength, 0, 10);
             UnCoefWordLengthIF.text = UnCoefWordLength.ToString();
         }
         
@@ -375,12 +379,6 @@ public class SpritzScript : MonoBehaviour
         StartReadTime = false;
     }
 
-    public float PRTime;
-
-    public float PauseReadTimer = 0.5f;
-
-    public bool StartReadTime;
-
     [Space(10)]
 
     public GameObject ReadFade;
@@ -431,11 +429,11 @@ public class SpritzScript : MonoBehaviour
     {
         if(StartReadTime)
         {
-            PRTime += Time.deltaTime;
+            PauseBeginTime += Time.deltaTime;
 
-            if(PRTime >= PauseReadTimer)
+            if(PauseBeginTime >= PauseBeginReadTime)
             {
-                PRTime = 0;
+                PauseBeginTime = 0;
                 SpritzDown ();
             }
         }
@@ -450,7 +448,7 @@ public class SpritzScript : MonoBehaviour
             timeWord = SpritZChars.Count * CoeffChar;
             isSpritz = false;
 
-            PRTime = 0;
+            PauseBeginTime = 0;
             StartReadTime = false;
         }
     }
@@ -752,7 +750,7 @@ public class SpritzScript : MonoBehaviour
         ImagesContent.anchoredPosition = Vector2.zero;
 
         if(SpritzContent.activeSelf)
-            timeWord += 0.3f;
+            timeWord = PauseBeginReadTime;
 
         PageID = pageID;
         PageInfo.text = (PageID + 1).ToString() + '/' + Pages.Count;
